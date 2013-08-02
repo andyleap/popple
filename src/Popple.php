@@ -1,12 +1,7 @@
 <?php
 
-require_once "Extendable.php";
-require_once "Poppable.php";
-/**
- * Description of Popple
- *
- * @author Vendan
- */
+namespace Popple;
+
 class Popple implements ArrayAccess, Poppable
 {
 	use Extendable;
