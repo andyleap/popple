@@ -60,15 +60,16 @@ class Popple implements ArrayAccess, Poppable
 	
 	public function Mutate($name, $mutator)
 	{
+		$boundmutator = $mutator->bindTo($this);
 		if(array_key_exists($name, $this->values))
 		{
-			$this->values[$name] = $mutator($this->values[$name]);
+			$this->values[$name] = $boundmutator($this->values[$name]);
 		}
 		if(!array_key_exists($name, $this->mutators))
 		{
 			$this->mutators[$name] = array();
 		}
-		$this->mutators[$name][] = $mutator;
+		$this->mutators[$name][] = $boundmutator;
 	}
 
 	public function Pop()
