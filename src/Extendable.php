@@ -15,6 +15,15 @@ trait Extendable
 		throw new BadMethodCallException();
 	}
 	
+	public function __get($name)
+	{
+		if(array_key_exists($name, $this->funcs))
+		{
+			return $this->funcs[$name];
+		}
+		throw new OutOfBoundsException();
+	}
+	
 	public function Extend($name, $function)
 	{
 		$this->funcs[$name] = $function->bindTo($this);
