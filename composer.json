@@ -1,0 +1,20 @@
+{
+    "name": "andyleap/popple",
+    "description": "Simple Dependency Injection container inspired by Pimple",
+    "keywords": ["dependency injection"],
+    "homepage": "http://github.com/andyleap/popple",
+    "type": "library",
+    "license": "GPLv2",
+    "authors": [
+        {
+            "name": "Andrew Leap",
+            "email": "andyleap@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0"
+    },
+    "autoload": {
+        "psr-0": {"Popple": "src/"}
+    }
+}
