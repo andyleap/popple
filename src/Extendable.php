@@ -1,10 +1,7 @@
 <?php
 
-/**
- * Description of Extendable
- *
- * @author Vendan
- */
+namespace Popple;
+
 trait Extendable
 {
 	private $funcs = array();
