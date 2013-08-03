@@ -2,7 +2,7 @@
 
 namespace Popple;
 
-class Popple implements ArrayAccess, Poppable
+class Popple implements \ArrayAccess, Poppable
 {
 	use Extendable;
 	
