@@ -13,69 +13,69 @@ a little bit of work around, as you have to extend the service, and then share i
 
 With Popple, that's handled for you.  Popple takes the viewpoint that everything is shared, so, first, you create the service.
 
-  $popple = new Popple();
-  
-  $popple->Share('db', function($p)
-  {
-    $db = new Popple();
-  	$db->Extend('Connect', function()
-  	{
-  		if(!isset($this['username']))
-  		{
-  			die('Username required!');
-  		}
-  		echo 'Connecting as ' . $this['username'];
-  	});
-  	return $db;
-  });
+    $popple = new Popple();
+    
+    $popple->Share('db', function($p)
+    {
+      $db = new Popple();
+    	$db->Extend('Connect', function()
+    	{
+    		if(!isset($this['username']))
+    		{
+    			die('Username required!');
+    		}
+    		echo 'Connecting as ' . $this['username'];
+    	});
+    	return $db;
+    });
 
 This creates a simple service of the main $popple instance.  It's accessed and used rather simply
 
-  $popple['db']['username'] = 'guest';
-  $popple['db']->Connect();
+    $popple['db']['username'] = 'guest';
+    $popple['db']->Connect();
 
 This also showcases another feature of Popple, it's ability to quickly extend out and form a service on it's own,
 without requiring formalized classes, while still allowing easy transitioning to a class structure.  Hence, the above is roughly equivalent  to
 
-  public class DB extends Popple
-  {
-    public function Connect()
+    public class DB extends Popple
     {
-      if(!isset($this['username']))
-    	{
-  			die('Username required!');
-  		}
-  		echo 'Connecting as ' . $this['username'];
+      public function Connect()
+      {
+        if(!isset($this['username']))
+      	{
+    			die('Username required!');
+    		}
+    		echo 'Connecting as ' . $this['username'];
+      }
     }
-  }
-  
-  $popple->Share('db', function($p)
-  {
-    return new DB();
-  });
+    
+    $popple->Share('db', function($p)
+    {
+      return new DB();
+    });
 
 Then, all you do is Mutate the service to alter it
 
-  $popple->Mutate('db', function($db)
-  {
-    $oldconnect = $db->Connect;
-  	$db->Extend('Connect', function() use ($oldconnect)
-  	{
-  		$oldconnect();
-  		if(!isset($this['password']))
-  		{
-  			die('Password required!');
-  		}
-  		echo ' with password ' . $this['password'];
-  	});
-  	return $db;
-  });
+    $popple->Mutate('db', function($db)
+    {
+      $oldconnect = $db->Connect;
+    	$db->Extend('Connect', function() use ($oldconnect)
+    	{
+    		$oldconnect();
+    		if(!isset($this['password']))
+    		{
+    			die('Password required!');
+    		}
+    		echo ' with password ' . $this['password'];
+    	});
+    	return $db;
+    });
 
 Then, all you have to do to use the new Connect method is
 
-  $popple['db']['username'] = 'admin';
-  $popple['db']['password'] = 'password';
-  $popple['db']->Connect();
+    $popple['db']['username'] = 'admin';
+    $popple['db']['password'] = 'password';
+    $popple['db']->Connect();
 
 Note that the Mutation can occur at any point.  The service may have already been instantiated, 
 it may be registered and the mutation queued to occur on instantiation, 
