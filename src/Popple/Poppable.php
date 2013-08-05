@@ -4,5 +4,5 @@ namespace Popple;
 
 interface Poppable
 {
-	public function Pop();
+	public function pop();
 }
