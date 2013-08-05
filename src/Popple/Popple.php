@@ -9,8 +9,9 @@ class Popple implements \ArrayAccess, Poppable
 	private $values = array();
 	private $factories = array();
 	private $mutators = array();
+	private $funcs = array();
 	
-	private function Evaluate($name)
+	private function evaluate($name)
 	{
 		$value = $this->factories[$name]($this);
 		foreach($this->mutators[$name] as $mutator)
@@ -33,7 +34,7 @@ class Popple implements \ArrayAccess, Poppable
 		}
 		if(array_key_exists($name, $this->factories))
 		{
-			$this->values[$name] = $this->Evaluate($name);
+			$this->values[$name] = $this->evaluate($name);
 			return $this->values[$name];
 		}
 		throw new InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $name));
@@ -49,7 +50,34 @@ class Popple implements \ArrayAccess, Poppable
 		unset($this->values[$name]);
 	}
 	
-	public function Share($name, $factory)
+	public function __call($name, $arguments)
+	{
+		if(array_key_exists($name, $this->funcs))
+		{
+			return call_user_func_array($this->funcs[$name], $arguments);
+		}
+		throw new BadMethodCallException();
+	}
+	
+	public function __get($name)
+	{
+		if(array_key_exists($name, $this->funcs))
+		{
+			return $this->funcs[$name];
+		}
+		return $this->offsetGet($name);
+	}
+	
+	public function __set($name, $value)
+	{
+		if(array_key_exists($name, $this->funcs))
+		{
+			throw new OutOfBoundsException();
+		}
+		$this->offsetSet($name, $value);
+	}
+	
+	public function share($name, $factory)
 	{
 		$this->factories[$name] = $factory;
 		if(!array_key_exists($name, $this->mutators))
@@ -58,7 +86,7 @@ class Popple implements \ArrayAccess, Poppable
 		}
 	}
 	
-	public function Mutate($name, $mutator)
+	public function mutate($name, $mutator)
 	{
 		$boundmutator = $mutator->bindTo($this);
 		if(array_key_exists($name, $this->values))
@@ -72,19 +100,24 @@ class Popple implements \ArrayAccess, Poppable
 		$this->mutators[$name][] = $boundmutator;
 	}
 
-	public function Pop()
+	public function pop()
 	{
 		foreach(array_keys($this->factories) as $name)
 		{
 			if(!array_key_exists($name, $this->values))
 			{
-				$this->values[$name] = $this->Evaluate($name);
+				$this->values[$name] = $this->evaluate($name);
 			}
 			if($this->values[$name] instanceof Poppable)
 			{
-				$this->values[$name]->Pop();
+				$this->values[$name]->pop();
 			}
 		}
+	}
+	
+	public function extend($name, $function)
+	{
+		$this->funcs[$name] = $function->bindTo($this);
 	}
 }
 
