@@ -4,8 +4,6 @@ namespace Popple;
 
 class Popple implements \ArrayAccess, Poppable
 {
-	use Extendable;
-	
 	private $values = array();
 	private $factories = array();
 	private $mutators = array();
