@@ -75,6 +75,14 @@ class Popple implements \ArrayAccess, Poppable
 		$this->offsetSet($name, $value);
 	}
 	
+	public function __clone()
+	{
+		foreach($this->funcs as &$func)
+		{
+			$func = $func->bindTo($this);
+		}
+	}
+	
 	public function share($name, $factory)
 	{
 		$this->factories[$name] = $factory;
