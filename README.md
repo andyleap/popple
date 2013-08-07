@@ -1,5 +1,8 @@
 Popple
 ======
+Develop
+-------
+[![Build Status](https://travis-ci.org/andyleap/popple.png?branch=develop)](https://travis-ci.org/andyleap/popple)
 
 Simple DI container for PHP inspired by Pimple.
 
