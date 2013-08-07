@@ -14,7 +14,7 @@ class Popple implements \ArrayAccess, Poppable
 		$value = $this->factories[$name]($this);
 		foreach($this->mutators[$name] as $mutator)
 		{
-			$value = $mutator($value);
+			$value = $mutator($value, $this);
 		}
 		return $value;
 	}
@@ -94,16 +94,15 @@ class Popple implements \ArrayAccess, Poppable
 	
 	public function mutate($name, $mutator)
 	{
-		$boundmutator = $mutator->bindTo($this);
 		if(array_key_exists($name, $this->values))
 		{
-			$this->values[$name] = $boundmutator($this->values[$name]);
+			$this->values[$name] = $mutator($this->values[$name], $this);
 		}
 		if(!array_key_exists($name, $this->mutators))
 		{
 			$this->mutators[$name] = array();
 		}
-		$this->mutators[$name][] = $boundmutator;
+		$this->mutators[$name][] = $mutator;
 	}
 
 	public function pop()
